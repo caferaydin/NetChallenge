@@ -1,5 +1,5 @@
 ﻿using MediatR;
-using NetChallenge.Application.Abstractions.Services;
+using NetChallenge.Application.Abstractions.Repository.Write;
 
 namespace NetChallenge.Application.Features.Commands.Carrier.CreateCarrier
 {
@@ -8,16 +8,16 @@ namespace NetChallenge.Application.Features.Commands.Carrier.CreateCarrier
         #region Fields
 
         private readonly IMediator _mediator;
-        private readonly ICarrierService _carrierService;
+        private readonly ICarrierWriteRepository _carrierWriteRepository;
 
         #endregion
 
         #region Ctor
 
-        public CarrierCreateCommandHandler(IMediator mediator, ICarrierService carrierService)
+        public CarrierCreateCommandHandler(IMediator mediator, ICarrierWriteRepository carrierWriteRepository)
         {
             _mediator = mediator;
-            _carrierService = carrierService;
+            _carrierWriteRepository = carrierWriteRepository;
         }
 
         #endregion
@@ -26,13 +26,14 @@ namespace NetChallenge.Application.Features.Commands.Carrier.CreateCarrier
 
         public async Task<CarrierCreateCommandResponse> Handle(CarrierCreateCommandRequest request, CancellationToken cancellationToken)
         {
-            await _carrierService.CreateCarrierAsync(new()
+            await _carrierWriteRepository.AddAsync(new()
             {
                 CarrierPlusDesiCost = request.CarrierPlusDesiCost,
                 CarrierConfigurationId = request.CarrierConfigurationId,
                 CarrierName = request.CarrierName,
                 CarrierIsActive = request.CarrierIsActive,
             });
+            await _carrierWriteRepository.SaveAsync();
 
             return new()
             {

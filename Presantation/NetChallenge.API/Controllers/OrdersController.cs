@@ -1,7 +1,10 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using NetChallenge.Application.Abstractions.Services;
-using NetChallenge.Application.ViewModel.Order;
+using NetChallenge.Application.Features.Commands.Order.CreateOrder;
+using NetChallenge.Application.Features.Commands.Order.RemoveOrder;
+using NetChallenge.Application.Features.Queries.Order.GetAllOrder;
+using NetChallenge.Application.Features.Queries.Order.GetByIdOrder;
 
 namespace NetChallenge.API.Controllers
 {
@@ -10,45 +13,48 @@ namespace NetChallenge.API.Controllers
     public class OrdersController : ControllerBase
     {
         #region Fields
-        private readonly IOrderService _orderService;
         private readonly IMediator _mediator;
         #endregion
 
         #region Ctor
-        public OrdersController(IOrderService orderService, IMediator mediator)
+        public OrdersController( IMediator mediator)
         {
-            _orderService = orderService;
             _mediator = mediator;
         }
         #endregion
 
         #region Method
 
-        [HttpGet("getAllOrders")]
-        public async Task<IActionResult> GetAllOrders()
+        [HttpGet]
+        public async Task<IActionResult> GetAllOrders([FromQuery] GetAllOrderQueryRequest request)
         {
-            return Ok(await _orderService.GetAllOrdersAsync());
+            GetAllOrderQueryResponse response = await _mediator.Send(request);
+            return Ok(response);
+            //return Ok(await _orderService.GetAllOrdersAsync());
         }
-        [HttpGet("getById/{id}")]
-        public async Task<IActionResult> GetById(int id)
+        [HttpGet("{Id}")]
+        public async Task<IActionResult> GetById([FromRoute] GetByIdOrderQueryRequest request)
         {
-            return Ok(await _orderService.GetByIdAsync(id));
-        }
-
-        [HttpPost("createOrder")]
-        public async Task<ActionResult> CreateOrder(CreateOrder request)
-        {
-            //CreateOrderCommandResponse response = await _mediator.Send(createOrderCommandRequest);
-            //return Ok(response);
-
-            return Ok(await _orderService.CreateOrderAsync(request));
-
+            GetByIdOrderQueryResponse response = await _mediator.Send(request);
+            return Ok(response);
+            //return Ok(await _orderService.GetByIdAsync(id));
         }
 
-        [HttpDelete("deleteOrder/{id}")]
-        public async Task<IActionResult> DeleteOrder(int id)
+        [HttpPost]
+        public async Task<ActionResult> CreateOrder(OrderCreateCommandRequest request)
         {
-            return Ok(await _orderService.DeleteAsync(id));
+            OrderCreateCommandResponse response = await _mediator.Send(request);
+            return Ok(response);
+
+
+        }
+
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteOrder(OrderRemoveCommandRequest request)
+        {
+            OrderRemoveCommandResponse response = await _mediator.Send(request); 
+            return Ok(response);
+            //return Ok(await _orderService.DeleteAsync(id));
         }
         #endregion
 

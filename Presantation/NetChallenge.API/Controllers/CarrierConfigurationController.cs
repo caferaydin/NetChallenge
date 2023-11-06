@@ -1,5 +1,11 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using MediatR;
+using Microsoft.AspNetCore.Mvc;
 using NetChallenge.Application.Abstractions.Services;
+using NetChallenge.Application.Features.Commands.CarrierConfiguration.CreateCarrierConfiguration;
+using NetChallenge.Application.Features.Commands.CarrierConfiguration.RemoveCarrierConfiguration;
+using NetChallenge.Application.Features.Commands.CarrierConfiguration.UpdateCarrierConfiguration;
+using NetChallenge.Application.Features.Queries.CarrierConfiguration.GetAllCarrierConfiguration;
+using NetChallenge.Application.Features.Queries.CarrierConfiguration.GetByIdCarrierConfiguration;
 using NetChallenge.Application.ViewModel.CarrierConfiguration;
 
 namespace NetChallenge.API.Controllers
@@ -9,46 +15,53 @@ namespace NetChallenge.API.Controllers
     public class CarrierConfigurationController : ControllerBase
     {
         #region Fields
-        private readonly ICarrierConfigurationService _carrierConfigurationService;
+        private readonly IMediator _mediator;
         #endregion
 
         #region Ctor
-        public CarrierConfigurationController(ICarrierConfigurationService carrierConfigurationService)
+        public CarrierConfigurationController(IMediator mediator)
         {
-            _carrierConfigurationService = carrierConfigurationService;
+            _mediator = mediator;
         }
         #endregion
 
         #region Method
 
-        [HttpGet("getCarrierConfigurations")]
-        public async Task<IActionResult> GetCarrierConfigurations()
+        [HttpGet]
+        public async Task<IActionResult> GetCarrierConfigurations([FromQuery] GetAllCarrierConfigurationQueryRequest request)
         {
-            return Ok(await _carrierConfigurationService.GetAllCarrierConfigurationsAsync());
+            GetAllCarrierConfigurationQueryReponse response = await _mediator.Send(request);
+            return Ok(response);
+            //return Ok(await _carrierConfigurationService.GetAllCarrierConfigurationsAsync());
         }
 
-        [HttpGet("getById/{carrierConfigurationId}")]
-        public async Task<IActionResult> GetById(int carrierConfigurationId)
+        [HttpGet("{Id}")]
+        public async Task<IActionResult> GetById([FromRoute] GetByIdCarrierConfigurationQueryRequest request)
         {
-            return Ok(await _carrierConfigurationService.GetByIdAsync(carrierConfigurationId));
+            GetByIdCarrierConfigurationQueryResponse response = await _mediator.Send(request);
+            return Ok(response);
+            //return Ok(await _carrierConfigurationService.GetByIdAsync(carrierConfigurationId));
         }
 
-        [HttpPost("createCarrierConfiguration")]
-        public async Task<IActionResult> CreateCarrierConfiguration(CreateCarrierConfiguration request)
+        [HttpPost]
+        public async Task<ActionResult> CreateCarrierConfiguration(CarrierConfigurationCreateCommandRequest request)
         {
-            return Ok( await _carrierConfigurationService.CreateCarrierConfigurationAsync(request));
+            CarrierConfigurationCreateCommandResponse response = await _mediator.Send(request);
+            return Ok(response);
         }
 
-        [HttpPut("updateCarrierConfiguration")]
-        public async Task<IActionResult> UpdateCarrierConfugiration(UpdateCarrierConfiguration request)
+        [HttpPut]
+        public async Task<IActionResult> UpdateCarrierConfugiration([FromBody]  CarrierConfigurationUpdateCommandRequest request)
         {
-            return Ok(await _carrierConfigurationService.UpdateCarrierConfiguration(request));
+            CarrierConfigurationUpdateCommandResponse response = await _mediator.Send(request);
+            return Ok(response);
         }
 
-        [HttpDelete("deleteCarrierConfigurationId/{carrierConfigurationId}")]
-        public async Task<IActionResult> DeleteCarrierConfiguration(int carrierConfigurationId)
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteCarrierConfiguration(CarrierConfigurationRemoveCommandRequest request)
         {
-            return Ok(await _carrierConfigurationService.DeleteAsync(carrierConfigurationId));
+            CarrierConfigurationRemoveCommandResponse response = await _mediator.Send(request);
+            return Ok(response);
         }
 
         #endregion

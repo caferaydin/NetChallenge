@@ -28,7 +28,7 @@ namespace NetChallenge.API.Controllers
 
         #region Method
 
-        [HttpGet("getAllCarriers")]
+        [HttpGet]
         public async Task<IActionResult> GetAllCarriers([FromQuery]  GetAllCarrierQueryRequest request)
         {
             GetAllCarrierQueryResponse response = await _mediator.Send(request);
@@ -36,7 +36,7 @@ namespace NetChallenge.API.Controllers
             //return Ok(await _carrierService.GetAllCarriersAsync());
         }
 
-        [HttpGet("GetById/{Id}")]
+        [HttpGet("{Id}")]
         public async Task<IActionResult> GetById([FromRoute] GetByIdCarrierQueryRequest request) 
         {
             GetByIdCarrierQueryResponse response = await _mediator.Send(request);
@@ -44,23 +44,22 @@ namespace NetChallenge.API.Controllers
             //return Ok(await _carrierService.GetByIdAsync(id));
         }
 
-        [HttpPost("createCarrier")]
-        public  async Task<ActionResult> CreateCarrier(CarrierCreateCommandRequest request)
+        [HttpPost]
+        public  async Task<IActionResult> CreateCarrier(CarrierCreateCommandRequest request)
         {
             CarrierCreateCommandResponse response = await _mediator.Send(request);
             return Ok(response);
             //return Ok( _carrierService.CreateCarrier(request));
         }
 
-        [HttpPut("updateCarrier")]
+        [HttpPut]
         public async Task<IActionResult> UpdateCarrier([FromBody] CarrierUpdateCommandRequest request)
         {
             CarrierUpdateCommandResponse response = await _mediator.Send(request);
             return Ok(response);
-            //return Ok(await _carrierService.UpdateCarrier(request));
         }
 
-        [HttpDelete("delete/{id}")]
+        [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(CarrierRemoveCommadRequest request)
         {
             CarrierRemoveCommandResponse response = await _mediator.Send(request);

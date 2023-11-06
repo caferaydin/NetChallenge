@@ -23,7 +23,7 @@ namespace NetChallenge.Persistence.Services
         #endregion
 
         #region Method
-        public async Task<string> CreateCarrierConfigurationAsync(CreateCarrierConfiguration createCarrierConfiguration)
+        public async Task CreateCarrierConfigurationAsync(CreateCarrierConfiguration createCarrierConfiguration)
         {
             var carrierConfiguration = new CarrierConfiguration
             {
@@ -36,7 +36,7 @@ namespace NetChallenge.Persistence.Services
             await _writeRepository.AddAsync(carrierConfiguration);
             await _writeRepository.SaveAsync();
 
-            return "Yeni Konfigurasyon Eklendi: " + carrierConfiguration.Id;
+            //return "Yeni Konfigurasyon Eklendi: " + carrierConfiguration.Id;
         }
 
         public async Task<string> DeleteAsync(int id)
