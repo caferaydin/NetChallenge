@@ -14,6 +14,7 @@ namespace NetChallenge.Persistence.Context
         public DbSet<Carrier> Carriers { get; set; }
         public DbSet<CarrierConfiguration> CarrierConfigurations { get; set; }
         public DbSet<Order> Orders { get; set; }
+        public DbSet<CarrierReport> CarrierReports { get; set; }
         #endregion
 
         #region On Model
@@ -29,6 +30,11 @@ namespace NetChallenge.Persistence.Context
                 .HasOne(o => o.Carrier)
                 .WithMany(c => c.Orders)
                 .HasForeignKey(o => o.CarrierId);
+
+            modelBuilder.Entity<Carrier>()
+                .HasMany(c => c.CarrierReports)
+                .WithOne(cr => cr.Carrier)
+                .HasForeignKey(cr => cr.CarrierId);
 
         }
 

@@ -93,6 +93,39 @@ namespace NetChallenge.Persistence.Migrations
                     b.ToTable("CarrierConfigurations");
                 });
 
+            modelBuilder.Entity("NetChallenge.Domain.Entities.CarrierReport", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<decimal>("CarrierCost")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<int>("CarrierId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("CarrierReportDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("DeletedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CarrierId");
+
+                    b.ToTable("CarrierReports");
+                });
+
             modelBuilder.Entity("NetChallenge.Domain.Entities.Order", b =>
                 {
                     b.Property<int>("Id")
@@ -140,6 +173,17 @@ namespace NetChallenge.Persistence.Migrations
                     b.Navigation("Carrier");
                 });
 
+            modelBuilder.Entity("NetChallenge.Domain.Entities.CarrierReport", b =>
+                {
+                    b.HasOne("NetChallenge.Domain.Entities.Carrier", "Carrier")
+                        .WithMany("CarrierReports")
+                        .HasForeignKey("CarrierId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Carrier");
+                });
+
             modelBuilder.Entity("NetChallenge.Domain.Entities.Order", b =>
                 {
                     b.HasOne("NetChallenge.Domain.Entities.Carrier", "Carrier")
@@ -154,6 +198,8 @@ namespace NetChallenge.Persistence.Migrations
             modelBuilder.Entity("NetChallenge.Domain.Entities.Carrier", b =>
                 {
                     b.Navigation("CarrierConfigurations");
+
+                    b.Navigation("CarrierReports");
 
                     b.Navigation("Orders");
                 });

@@ -10,6 +10,7 @@ namespace NetChallenge.Domain.Entities
         public int CarrierConfigurationId { get; set; }
         public ICollection<CarrierConfiguration> CarrierConfigurations { get; set; }
         public ICollection<Order> Orders { get; set; }
+        public ICollection<CarrierReport> CarrierReports { get; set; }
 
     }
 }
