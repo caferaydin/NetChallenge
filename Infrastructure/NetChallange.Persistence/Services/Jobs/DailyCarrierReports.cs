@@ -30,24 +30,38 @@ namespace NetChallenge.Persistence.Services.Jobs
 
         public async Task AddDailyCarrierReports()
         {
-            var groupedOrders = _orderReadRepository.Table
-               .Include(o => o.Carrier)
-               .GroupBy(o => new { o.Carrier.Id, o.OrderDate })
-               .Select(g => new
-               {
-                   CarrierId = g.Key.Id,
-                   ReportDate = DateTime.Now,
-                   CarrierCost = g.Sum(o => o.OrderCarrierCost)
-               });
+            IEnumerable<Order> orders = _orderReadRepository.Table.Include(o => o.Carrier);
 
-            var carrierReports = groupedOrders.Select(order => new CarrierReport
+            var groupedOrders = orders.GroupBy(o => new { o.Carrier, o.OrderDate });
+
+            Dictionary<int, decimal> carrierCosts = new Dictionary<int, decimal>();
+            foreach (var group in groupedOrders)
             {
-                CarrierId = order.CarrierId,
-                CarrierReportDate = order.ReportDate,
-                CarrierCost = order.CarrierCost
-            }).ToList();
+                var carrier = group.Key.Carrier;
+                var totalCarrierCost = group.Sum(o => o.OrderCarrierCost);
 
-             _carrierReportWriteRepository.AddRangeAsync(carrierReports);
+                if (!carrierCosts.ContainsKey(carrier.Id))
+                {
+                    carrierCosts[carrier.Id] = totalCarrierCost;
+                }
+                else
+                {
+                    carrierCosts[carrier.Id] += totalCarrierCost;
+                }
+            }
+
+            // CarrierReport nesnelerini oluştur ve veritabanına kaydet
+            foreach (var entry in carrierCosts)
+            {
+                await _carrierReportWriteRepository.AddAsync(new CarrierReport
+                {
+                    CarrierId = entry.Key,
+                    CarrierReportDate = DateTime.Now,
+                    CarrierCost = entry.Value
+                });
+            }
+
+            // Değişiklikleri kaydet
             await _carrierReportWriteRepository.SaveAsync();
         }
     }

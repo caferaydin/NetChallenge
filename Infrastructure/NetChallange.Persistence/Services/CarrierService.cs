@@ -24,7 +24,7 @@ namespace NetChallenge.Persistence.Services
         #endregion
 
         #region Method
-        public async Task CreateCarrierAsync(CreateOrderDTO createCarrier)
+        public async Task CreateCarrierAsync(CarrierCreateDTO createCarrier)
         {
             await _writeRepository.AddAsync(new()
             {
@@ -55,14 +55,14 @@ namespace NetChallenge.Persistence.Services
             return true;
         }
 
-        public async Task<List<CarrierDTO>> GetAllCarriersAsync()
+        public async Task<List<CarrierCreateDTO>> GetAllCarriersAsync()
         {
             var carrier =  await _readRepository.GetAll().ToListAsync();
 
             throw new NotImplementedException();
         }
 
-        public async Task<CarrierDTO> GetByIdAsync(int Id)
+        public async Task<CarrierCreateDTO> GetByIdAsync(int Id)
         {
             var query =  await _readRepository.GetByIdAsync(Id);
             throw new NotImplementedException();

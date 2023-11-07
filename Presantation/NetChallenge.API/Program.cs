@@ -24,15 +24,17 @@ builder.Services.AddSignalR();
 builder.Services.AddHangfire(x =>
 {
     x.UseSqlServerStorage(HangfireConfiguration.ConnectionString);
-    RecurringJob.AddOrUpdate<DailyCarrierReports>(d => d.AddDailyCarrierReports(), "*/5 * * * *", TimeZoneInfo.Local);
+    //RecurringJob.AddOrUpdate<DailyCarrierReports>(d => d.AddDailyCarrierReports(), "*/5 * * * *", TimeZoneInfo.Local);
+    RecurringJob.AddOrUpdate<DailyCarrierReports>(d => d.AddDailyCarrierReports(), "0 0 * * *", TimeZoneInfo.Local);
+
 });
     //.SetDataCompatibilityLevel(CompatibilityLevel.Version_180)
     //.UseSimpleAssemblyNameTypeSerializer()
     //.UseRecommendedSerializerSettings()
     //.UseSqlServerStorage(HangfireConfiguration.ConnectionString));
-//.UseSqlServerStorage(
-//() => new Microsoft.Data.SqlClient.SqlConnection(HangfireConfiguration.ConnectionString))
-//);
+    //.UseSqlServerStorage(
+    //() => new Microsoft.Data.SqlClient.SqlConnection(HangfireConfiguration.ConnectionString))
+    //);
 builder.Services.AddHangfireServer();
 
 

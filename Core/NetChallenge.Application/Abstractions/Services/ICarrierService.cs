@@ -5,9 +5,9 @@ namespace NetChallenge.Application.Abstractions.Services
 {
     public interface ICarrierService
     {
-        Task<List<CarrierDTO>> GetAllCarriersAsync();
-        Task<CarrierDTO> GetByIdAsync(int Id);
-        Task CreateCarrierAsync(CreateOrderDTO request);
+        Task<List<CarrierCreateDTO>> GetAllCarriersAsync();
+        Task<CarrierCreateDTO> GetByIdAsync(int Id);
+        Task CreateCarrierAsync(CarrierCreateDTO request);
         
 
 
